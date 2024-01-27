@@ -73,7 +73,7 @@ export const Patientview = ({ setview, physioavailability }) => {
           </div>
 
           <h2 style={{ color: "black", textAlign: "center" }}>
-            Welcome back,Akshay
+            Welcome back, Akshay
           </h2>
           <Calendar
             onChange={handleDateChange}
