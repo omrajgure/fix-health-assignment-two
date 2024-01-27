@@ -1,0 +1,47 @@
+.wrapper {
+  color: white;
+  min-block-size: 100vh;
+  background: #0b1937;
+}
+.availableSlotTile {
+  background-color: lightgreen;
+  height: 100%;
+  width: 100%;
+}
+.viewCalendar {
+  height: auto;
+  width: 25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: aliceblue;
+  padding: 1rem;
+  border-radius: 12px;
+}
+.timeDiv {
+  color: black;
+  text-align: center;
+}
+.label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 15rem;
+  color: black;
+}
+@media screen and (max-width: 450px) {
+  .viewCalendar {
+    width: 20rem;
+  }
+  .label {
+    margin-left: 10rem;
+  }
+}
+@media screen and (max-width: 365px) {
+  .viewCalendar {
+    width: 16rem;
+  }
+  .label {
+    margin-left: 8rem;
+  }
+}

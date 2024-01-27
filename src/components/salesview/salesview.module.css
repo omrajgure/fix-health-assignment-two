@@ -1,0 +1,92 @@
+.wrapper {
+  /* color: white; */
+  min-block-size: 100vh;
+  background-color: aliceblue;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  background-color: #f2f2f2;
+  cursor: default;
+}
+
+tr:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+.highlight {
+  background-color: #f5f5f5;
+}
+.highlightRemover {
+  background-color: aliceblue;
+}
+.bookingDiv {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.innerdiv {
+  flex-direction: column;
+  display: flex;
+  padding: 2rem 1rem;
+  justify-content: center;
+  gap: 30px;
+  align-items: center;
+  height: 15rem;
+  width: 20rem;
+  background-color: inherit;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+.appointed {
+  background-color: limegreen;
+}
+.appointed:hover {
+  background-color: limegreen;
+}
+
+.selectWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.selectWrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  padding: 8px 32px 8px 12px;
+  font-size: 16px;
+  color: #333;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Style for the select arrow icon */
+.selectWrapper::after {
+  content: "\25BC"; /* Unicode character for downward arrow */
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Style for select options */
+.selectWrapper select option {
+  background-color: #fff;
+  color: #333;
+}

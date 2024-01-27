@@ -1,0 +1,5 @@
+.wrapper {
+  background-image: url("../../assets/hero_img.jpg");
+  background-size: cover;
+  min-block-size: 100vh;
+}

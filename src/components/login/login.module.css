@@ -1,0 +1,41 @@
+.wrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+.login {
+  height: 30rem;
+  width: 25rem;
+  margin-right: 4rem;
+  margin-top: 3rem;
+  color: white;
+}
+.inputDiv {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 2rem;
+}
+.buttonDiv {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+@media screen and (max-width: 510px) {
+  .wrapper {
+    margin-right: 0;
+    margin-left: 0;
+    justify-content: center;
+  }
+  .login {
+    margin-right: 0;
+    width: auto;
+    margin-left: 0;
+  }
+}
+@media screen and (max-width: 800px) {
+  .login {
+    border-radius: 12px;
+    background-color: rgba(11, 25, 55, 0.7); /* Use rgba to specify opacity */
+  }
+}

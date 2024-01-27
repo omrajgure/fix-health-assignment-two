@@ -1,0 +1,26 @@
+.wrapper {
+  height: 5rem;
+  display: flex;
+  justify-content: space-between;
+  padding-left: 50px;
+  padding-right: 50px;
+  align-items: center;
+  color: white;
+}
+.nav_elements {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+.nav_elements li {
+  cursor: pointer;
+}
+.logo {
+  height: 3rem;
+}
+
+@media screen and (max-width: 510px) {
+  .nav_elements {
+    display: none;
+  }
+}

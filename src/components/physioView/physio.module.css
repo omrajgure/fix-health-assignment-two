@@ -1,0 +1,33 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-block-size: 100vh;
+}
+.innerwrapper {
+  position: relative;
+  padding: 2rem 4rem;
+  height: 25rem;
+  width: 20rem;
+  background-color: aliceblue;
+
+  border-radius: 12px;
+}
+.innerwrapper::before {
+  border-radius: 12px;
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  filter: blur(3px);
+  z-index: -1;
+}
+@media screen and (max-width: 480px) {
+  .innerwrapper {
+    width: 15rem;
+    padding: 2rem 2rem;
+  }
+}
