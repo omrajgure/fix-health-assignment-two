@@ -36,6 +36,7 @@ function App() {
   const allPhysiodata = [physioOne, physioTwo, physioThree];
   const flattenedData = allPhysiodata.flat();
   const [remarks, setRemarks] = useState(Array(30).fill(""));
+  const [allocatedPhysioId, set_allocatedPhysioId] = useState([]);
 
   return (
     <div>
@@ -45,6 +46,7 @@ function App() {
           vertical: "bottom",
           horizontal: "center",
         }}
+        autoHideDuration={1000}
       >
         {view === "login" ? (
           <Hero
@@ -55,7 +57,11 @@ function App() {
             patientdata={patientdata}
           />
         ) : view === "patient" ? (
-          <Patientview setview={setview} physioavailability={flattenedData} />
+          <Patientview
+            setview={setview}
+            physioavailability={flattenedData}
+            allocatedPhysioId={allocatedPhysioId}
+          />
         ) : view === "physio" ? (
           <Physio
             physioOne={physioOne}
@@ -74,6 +80,7 @@ function App() {
             setview={setview}
             remarks={remarks}
             setRemarks={setRemarks}
+            set_allocatedPhysioId={set_allocatedPhysioId}
           />
         )}
       </SnackbarProvider>

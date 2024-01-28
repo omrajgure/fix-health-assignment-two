@@ -20,7 +20,13 @@
   justify-content: center;
   margin-top: 2rem;
 }
-
+@media screen and (max-width: 395px) {
+  .login {
+    font-size: small;
+    width: 20rem;
+    padding: 0;
+  }
+}
 @media screen and (max-width: 510px) {
   .wrapper {
     margin-right: 0;
@@ -37,5 +43,6 @@
   .login {
     border-radius: 12px;
     background-color: rgba(11, 25, 55, 0.7); /* Use rgba to specify opacity */
+    padding: 1rem;
   }
 }

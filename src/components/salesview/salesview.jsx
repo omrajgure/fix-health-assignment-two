@@ -8,7 +8,13 @@ import TextField from "@mui/material/TextField";
 import { CustomButton } from "../button/button";
 import { enqueueSnackbar } from "notistack";
 
-export function Salesview({ allPhysiodata, setview, remarks, setRemarks }) {
+export function Salesview({
+  allPhysiodata,
+  setview,
+  remarks,
+  setRemarks,
+  set_allocatedPhysioId,
+}) {
   const [clickedId, set_clickedId] = useState("");
   const [clickedPhysio, set_clickedPhysio] = useState("");
   const [flattenedData, set_flattenedData] = useState(
@@ -64,6 +70,18 @@ export function Salesview({ allPhysiodata, setview, remarks, setRemarks }) {
         return physio;
       })
     );
+    const allocatedIds = [];
+
+    // Loop through the remarks array
+    remarks.forEach((remark, index) => {
+      // Check if the remark is not empty
+      if (remark !== "") {
+        // Add the index to the allocatedIds array
+        allocatedIds.push(index);
+      }
+    });
+
+    set_allocatedPhysioId(allocatedIds);
     set_declined(false);
   };
   const handlelogout = () => {
@@ -184,7 +202,7 @@ export function Salesview({ allPhysiodata, setview, remarks, setRemarks }) {
                 />
               </div>
             )}
-            {allocatePhysio === "yes" && (
+            {allocatePhysio === "yes" && remarks[clickedId] !== "" && (
               <div>
                 <CustomButton text={"Allocate"} handleCLick={handleclick} />
               </div>

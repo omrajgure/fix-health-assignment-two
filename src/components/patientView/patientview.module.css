@@ -25,23 +25,51 @@
 .label {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-left: 15rem;
+  justify-content: space-between;
+  gap: 20px;
   color: black;
+}
+
+.selectWrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.selectWrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #f4f4f4;
+  border: 1px solid #ccc;
+  padding: 8px 32px 8px 12px;
+  font-size: 16px;
+  color: #333;
+  border-radius: 4px;
+  cursor: pointer;
+  outline: none;
+}
+
+.selectWrapper::after {
+  content: "\25BC";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Style for select options */
+.selectWrapper select option {
+  background-color: #fff;
+  color: #333;
 }
 @media screen and (max-width: 450px) {
   .viewCalendar {
     width: 20rem;
   }
-  .label {
-    margin-left: 10rem;
-  }
 }
 @media screen and (max-width: 365px) {
   .viewCalendar {
     width: 16rem;
-  }
-  .label {
-    margin-left: 8rem;
   }
 }

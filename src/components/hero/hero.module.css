@@ -3,3 +3,9 @@
   background-size: cover;
   min-block-size: 100vh;
 }
+
+@media screen and (max-width: 510px) {
+  .wrapper {
+    background-position: 20% 50%;
+  }
+}
