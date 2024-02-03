@@ -3,31 +3,114 @@
   justify-content: center;
   align-items: center;
   min-block-size: 100vh;
+  background-image: url("../../assets/background_physio.jpg");
+  background-size: cover;
+  position: relative;
+}
+.opac {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+
+  z-index: 4;
 }
 .innerwrapper {
   position: relative;
   padding: 2rem 4rem;
-  height: 25rem;
-  width: 20rem;
+  height: 30rem;
+  width: 45rem;
   background-color: aliceblue;
 
   border-radius: 12px;
 }
-.innerwrapper::before {
-  border-radius: 12px;
-  content: "";
+.yes_noDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: white;
+  color: black;
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: inherit;
-  filter: blur(3px);
-  z-index: -1;
+  top: 5rem;
+  left: 5rem;
+  bottom: 5rem;
+  right: 5rem;
+  flex-direction: column;
+  z-index: 5;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.cal_time {
+  display: flex;
+  align-items: stretch;
+  gap: 20px;
+}
+
+.availableSlotTile {
+  background-color: lightgreen;
+  height: 100%;
+  width: 100%;
+}
+.availableSlotTile_Two {
+  background-color: yellow;
+  height: 100%;
+  width: 100%;
+}
+.calendar {
+  border: 1px solid #ccc; /* Add border */
+  border-radius: 12px; /* Add border radius */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow */
+  padding: 1rem;
+  flex: 1;
+}
+.date_time {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: rgb(243, 243, 243);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgb(234, 234, 234);
+  box-shadow: 0 2px 4px rgba(234, 234, 234, 0.7);
+}
+
+@media screen and (max-width: 864px) {
+  .cal_time {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .date_time {
+    width: 20rem;
+  }
+  .innerwrapper {
+    height: auto;
+    width: auto;
+  }
+  .yes_noDiv {
+    top: 18rem;
+    bottom: 15rem;
+  }
 }
 @media screen and (max-width: 480px) {
   .innerwrapper {
-    width: 15rem;
+    width: 20rem;
     padding: 2rem 2rem;
+  }
+  .date_time {
+    width: 17rem;
+  }
+  .calendar {
+    width: 19rem;
+  }
+  .yes_noDiv {
+    padding: 2rem;
+    left: 0;
+    right: 0;
   }
 }

@@ -68,7 +68,7 @@ export const Patientview = ({
         const timehour = parseInt(physio.time.split(":")[0]);
         return timehour < 12;
       });
-      // console.log(morningdata);
+
       set_filtereddata(morningdata);
     } else if (e.target.value === "afternoon") {
       const afternoondata = data.filter((physio) => {
@@ -146,6 +146,7 @@ export const Patientview = ({
               value={selectedDate}
               tileContent={tileContent}
               minDate={minSelectableDate}
+              className={styles.calen}
             />
             <div className={styles.timeDiv}>
               {selectedSlot.length > 0 ? (

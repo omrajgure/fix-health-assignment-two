@@ -1,7 +1,8 @@
 .wrapper {
   color: white;
   min-block-size: 100vh;
-  background: #0b1937;
+  background-image: url("../../assets/background_patient.jpg");
+  background-size: cover;
 }
 .availableSlotTile {
   background-color: lightgreen;
@@ -14,14 +15,50 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: aliceblue;
+  background-color: white;
   padding: 1rem;
   border-radius: 12px;
 }
-.timeDiv {
-  color: black;
-  text-align: center;
+.calen {
+  border-radius: 12px;
+  padding: 1rem;
 }
+
+.timeDiv {
+  margin-top: 2rem;
+  padding: 1rem;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+}
+
+.timeDiv h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.timeDiv ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.timeDiv li {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.timeDiv li:last-child {
+  margin-bottom: 0;
+}
+
+/* Style for "No Slots available" message */
+.timeDiv .noSlotsMessage {
+  font-size: 1.2rem;
+  color: #888;
+}
+
+/* ********************************************/
 .label {
   display: flex;
   align-items: center;
@@ -66,10 +103,12 @@
 @media screen and (max-width: 450px) {
   .viewCalendar {
     width: 20rem;
+    padding: 2rem;
   }
 }
 @media screen and (max-width: 365px) {
   .viewCalendar {
     width: 16rem;
+    padding: 1.5rem;
   }
 }

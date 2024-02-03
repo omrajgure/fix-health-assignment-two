@@ -49,8 +49,11 @@ export function Salesview({
     set_declined(true);
     set_allocatePhysio("");
   };
-  const handleallocate = (e) => {
+  const handleallocate = (e, clickedId) => {
     if (e.target.value === "no") {
+      const newRemarks = [...remarks];
+      newRemarks[clickedId] = "";
+      setRemarks(newRemarks);
       set_declined(false);
     }
     set_allocatePhysio(e.target.value);
@@ -183,7 +186,7 @@ export function Salesview({
                 aria-labelledby="demo-row-radio-buttons-group-label"
                 name="row-radio-buttons-group"
                 value={allocatePhysio}
-                onClick={(e) => handleallocate(e)}
+                onClick={(e) => handleallocate(e, clickedId)}
               >
                 <FormControlLabel value="yes" control={<Radio />} label="Yes" />
                 <FormControlLabel value="no" control={<Radio />} label="No" />

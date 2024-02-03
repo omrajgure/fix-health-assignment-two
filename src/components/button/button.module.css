@@ -9,5 +9,9 @@
 }
 .formButton {
   text-align: center;
-  width: 15rem;
+  width: 5rem;
+}
+.submitButton {
+  text-align: center;
+  width: 8rem;
 }
