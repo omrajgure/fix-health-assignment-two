@@ -1,7 +1,7 @@
 .wrapper {
-  /* color: white; */
   min-block-size: 100vh;
   background-color: aliceblue;
+  position: relative;
 }
 
 table {
@@ -44,8 +44,7 @@ tr:hover {
   justify-content: center;
   gap: 30px;
   align-items: center;
-  height: 15rem;
-  width: 20rem;
+
   background-color: inherit;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
 }
@@ -75,9 +74,8 @@ tr:hover {
   outline: none;
 }
 
-/* Style for the select arrow icon */
 .selectWrapper::after {
-  content: "\25BC"; /* Unicode character for downward arrow */
+  content: "\25BC";
   position: absolute;
   top: 50%;
   right: 10px;
@@ -89,4 +87,52 @@ tr:hover {
 .selectWrapper select option {
   background-color: #fff;
   color: #333;
+}
+
+.opac {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+
+  z-index: 4;
+}
+.yes_noDiv {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-color: white;
+  color: black;
+  position: absolute;
+  top: 10rem;
+  left: 15rem;
+  bottom: 10rem;
+  right: 15rem;
+  flex-direction: column;
+  z-index: 5;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+@media screen and (max-width: 830px) {
+  .yes_noDiv {
+    left: 10rem;
+    right: 10rem;
+  }
+}
+@media screen and (max-width: 665px) {
+  .yes_noDiv {
+    left: 5rem;
+    right: 5rem;
+  }
+}
+@media screen and (max-width: 505px) {
+  .yes_noDiv {
+    left: 2rem;
+    right: 2rem;
+  }
 }

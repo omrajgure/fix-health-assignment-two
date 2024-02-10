@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
 import styles from "./physio.module.css";
 import dayjs from "dayjs";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+
 import { CustomButton } from "../button/button";
 import { enqueueSnackbar } from "notistack";
-import { add, format, isSameDay, subDays } from "date-fns";
-import TextField from "@mui/material/TextField";
-import Calendar from "react-calendar";
+import { format, subDays } from "date-fns";
+
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+
 import Radio from "@mui/material/Radio";
 import RadioGroup from "@mui/material/RadioGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import "react-calendar/dist/Calendar.css";
 
 export const Physio = ({
   physioOne,
@@ -27,222 +28,50 @@ export const Physio = ({
   loggedinPhysio,
   set_loggedinPhysio,
 }) => {
-  const [time, settime] = useState(dayjs());
-  const [addedAvail, set_addedAvail] = useState([]);
   const [availSubmitted, set_availSubmitted] = useState(" ");
-  const [addedAvailTwo, set_addedAvailTwo] = useState([]);
-  const [availSubmittedTwo, set_availSubmittedTwo] = useState(" ");
-  const [addedAvailThree, set_addedAvailThree] = useState([]);
-  const [availSubmittedThree, set_availSubmittedThree] = useState(" ");
-
   const [radio, set_radio] = useState("");
-
-  // ************************************************************* //
-
+  const [allDateSelected, set_allDateSelected] = useState([]);
+  const [unselected, set_unselected] = useState("");
+  const [startAvailableHours, set_startAvailableHours] = useState("");
+  const [endAvailableHours, set_endAvailableHours] = useState("");
+  const [generatedIds, setGeneratedIds] = useState(new Set());
   useEffect(() => {
-    const newdate = dayjs().add(2, "day").startOf("day").$d;
-    handleDateChange(newdate);
-  }, []);
-  const [selectedDate, setSelectedDate] = useState(dayjs().add(2, "day"));
-
-  const handleDateChange = (date) => {
-    const formattedDate = dayjs(date).format("dddd, MMMM D, YYYY");
-    setSelectedDate(formattedDate);
-  };
-
-  // *************************************************************//
-
-  const tileContent = ({ date, view }) => {
-    if (view === "month") {
-      const formattedDate = format(date, "EEEE, MMMM dd, yyyy"); // Format tileContent date
-
-      if (loggedinPhysio.id === 5890) {
-        if (physioOne) {
-          if (physioOne.some((slot) => isSameDay(slot.date, formattedDate))) {
-            return <div className={styles.availableSlotTile}></div>;
-          }
-        }
-        if (addedAvail) {
-          if (addedAvail.some((slot) => isSameDay(slot.date, formattedDate))) {
-            return <div className={styles.availableSlotTile_Two}></div>;
-          }
-        }
-      } else if (loggedinPhysio.id === 5891) {
-        if (physioTwo) {
-          if (physioTwo.some((slot) => isSameDay(slot.date, formattedDate))) {
-            return <div className={styles.availableSlotTile}></div>;
-          }
-        }
-        if (addedAvailTwo) {
-          if (
-            addedAvailTwo.some((slot) => isSameDay(slot.date, formattedDate))
-          ) {
-            return <div className={styles.availableSlotTile_Two}></div>;
-          }
-        }
-      } else if (loggedinPhysio.id === 5892) {
-        if (physioThree) {
-          if (physioThree.some((slot) => isSameDay(slot.date, formattedDate))) {
-            return <div className={styles.availableSlotTile}></div>;
-          }
-        }
-        if (addedAvailThree) {
-          if (
-            addedAvailThree.some((slot) => isSameDay(slot.date, formattedDate))
-          ) {
-            return <div className={styles.availableSlotTile_Two}></div>;
-          }
-        }
-      }
-    }
-    return null;
-  };
-  const generateUniqueNumericId = () => {
-    return Math.floor(Math.random() * 30) + 1;
-  };
-
-  const handleAdd = () => {
-    const formattedTime = time.format("HH:mm");
-    const onlytime = time.format("mm");
-    if (onlytime % 15 === 0) {
-      const data = {
-        id: generateUniqueNumericId(),
-        name:
-          loggedinPhysio.id === 5890
-            ? "Raj sharma"
-            : loggedinPhysio.id === 5891
-            ? "Neha pawar"
-            : "Krishna Reddy",
-        date: selectedDate,
-        time: formattedTime,
-      };
-      if (loggedinPhysio.id === 5890) {
-        if (
-          !addedAvail.some(
-            (item) => item.date === data.date && item.time === data.time
-          ) &&
-          !physioOne.some(
-            (item) => item.date === data.date && item.time === data.time
-          )
-        ) {
-          set_addedAvail((prevdata) => [...prevdata, data]);
-
-          enqueueSnackbar("Availability added", {
-            variant: "success",
-          });
-        } else {
-          enqueueSnackbar("Availability already added", { variant: "error" });
-        }
-      } else if (loggedinPhysio.id === 5891) {
-        if (
-          !addedAvailTwo.some(
-            (item) => item.date === data.date && item.time === data.time
-          ) &&
-          !physioTwo.some(
-            (item) => item.date === data.date && item.time === data.time
-          )
-        ) {
-          set_addedAvailTwo((prevdata) => [...prevdata, data]);
-
-          enqueueSnackbar("Availability added", {
-            variant: "success",
-          });
-        } else {
-          enqueueSnackbar("Availability already added", {
-            variant: "error",
-          });
-        }
-      } else {
-        if (
-          !addedAvailThree.some(
-            (item) => item.date === data.date && item.time === data.time
-          ) &&
-          !physioThree.some(
-            (item) => item.date === data.date && item.time === data.time
-          )
-        ) {
-          set_addedAvailThree((prevdata) => [...prevdata, data]);
-
-          enqueueSnackbar("Availability added", {
-            variant: "success",
-          });
-        } else {
-          enqueueSnackbar("Availability already added", {
-            variant: "error",
-          });
-        }
-      }
-    } else {
-      enqueueSnackbar("Please select appropriate timeslot", {
-        variant: "warning",
+    if (unselected) {
+      set_allDateSelected((prevdata) => {
+        return prevdata.filter((dates) => dates !== unselected);
       });
     }
-  };
+  }, [unselected]);
 
-  const handlesubmit = () => {
-    if (loggedinPhysio.id === 5890) {
-      if (addedAvail.length > 0) {
-        set_physioOne((prevval) => [...prevval, ...addedAvail]);
-      } else {
-        enqueueSnackbar("Should add at least one availability", {
-          variant: "warning",
-        });
-      }
-    } else if (loggedinPhysio.id === 5891) {
-      if (addedAvailTwo.length > 0) {
-        set_physioTwo((prevval) => [...prevval, ...addedAvailTwo]);
-      } else {
-        enqueueSnackbar("Should add at least one availability", {
-          variant: "warning",
-        });
-      }
-    } else {
-      if (addedAvailThree.length > 0) {
-        set_physioThree((prevval) => [...prevval, ...addedAvailThree]);
-      } else {
-        enqueueSnackbar("Should add at least one availability", {
-          variant: "warning",
-        });
-      }
+  const handleStartAvailable = (event) => {
+    if (event.target.value >= endAvailableHours) {
+      const val = event.target.value + 1;
+      set_endAvailableHours(val === 24 ? 0 : val);
     }
-    set_addedAvail([]);
-    set_availSubmitted(true);
-    set_addedAvailTwo([]);
-    set_availSubmittedTwo(true);
-    set_addedAvailThree([]);
-    set_availSubmittedThree(true);
+    set_startAvailableHours(event.target.value);
+  };
+  const handleEndAvailable = (event) => {
+    if (event.target.value <= startAvailableHours) {
+      const val = event.target.value - 1;
+      set_startAvailableHours(val === -1 ? 11 : val);
+    }
+    set_endAvailableHours(event.target.value);
   };
 
-  const handletimechange = (newval) => {
-    settime(newval);
-  };
+  const handleDateChange = (date) => {
+    const formattedDate = format(date, "EEEE, MMMM dd, yyyy");
 
-  const handleLogout = () => {
-    set_radio("");
-    if (loggedinPhysio.id === 5890) {
-      if (addedAvail.length > 0) {
-        set_availSubmitted(false);
-      } else {
-        set_loggedinPhysio("");
-        setview("login");
-        set_availSubmitted(true);
-      }
-    } else if (loggedinPhysio.id === 5891) {
-      if (addedAvailTwo.length > 0) {
-        set_availSubmittedTwo(false);
-      } else {
-        set_loggedinPhysio("");
-        setview("login");
-        set_availSubmittedTwo(true);
-      }
+    if (!allDateSelected.includes(formattedDate)) {
+      // Create a new array to hold the updated list of dates
+      const updatedDates = [...allDateSelected, formattedDate];
+      // Sort the array in ascending order
+      updatedDates.sort((a, b) => dayjs(a).diff(dayjs(b)));
+
+      set_allDateSelected(updatedDates);
+
+      set_unselected("");
     } else {
-      if (addedAvailThree.length > 0) {
-        set_availSubmittedThree(false);
-      } else {
-        set_loggedinPhysio("");
-        setview("login");
-        set_availSubmittedThree(true);
-      }
+      set_unselected(formattedDate);
     }
   };
   const handleradio = (e) => {
@@ -252,16 +81,186 @@ export const Physio = ({
       setview("login");
     }
     set_availSubmitted(true);
-    set_availSubmittedTwo(true);
-    set_availSubmittedThree(true);
   };
-  const minSelectableDate = subDays(new Date(), -2);
-  const dayjsDate = dayjs(selectedDate);
+  const handlesubmit = () => {
+    const data = {
+      id: generateUniqueNumericId(),
+      name:
+        loggedinPhysio.id === 5890
+          ? "Raj sharma"
+          : loggedinPhysio.id === 5891
+          ? "Neha pawar"
+          : "Krishna Reddy",
+      date: allDateSelected,
+      start: startAvailableHours,
+      end: endAvailableHours,
+    };
+    const isDuplicate = physioOne.some(
+      (item) =>
+        item.name === data.name &&
+        arraysEqual(item.date, data.date) &&
+        item.start === data.start &&
+        item.end === data.end
+    );
+    const isDuplicatetwo = physioTwo.some(
+      (item) =>
+        item.name === data.name &&
+        arraysEqual(item.date, data.date) &&
+        item.start === data.start &&
+        item.end === data.end
+    );
+    const isDuplicatethree = physioThree.some(
+      (item) =>
+        item.name === data.name &&
+        arraysEqual(item.date, data.date) &&
+        item.start === data.start &&
+        item.end === data.end
+    );
+
+    if (loggedinPhysio.id === 5890) {
+      if (!isDuplicate) {
+        if (
+          data.start === "" ||
+          data.end === "" ||
+          allDateSelected.length === 0
+        ) {
+          enqueueSnackbar("Please enter the available hours", {
+            variant: "warning",
+          });
+        } else {
+          set_physioOne((prevval) => [...prevval, data]);
+          set_allDateSelected([]);
+          set_startAvailableHours("");
+          set_endAvailableHours("");
+        }
+      } else {
+        enqueueSnackbar("Availability already provided", {
+          variant: "warning",
+        });
+      }
+    } else if (loggedinPhysio.id === 5891) {
+      if (!isDuplicatetwo) {
+        if (
+          data.start === "" ||
+          data.end === "" ||
+          allDateSelected.length === 0
+        ) {
+          enqueueSnackbar("Please enter the available hours", {
+            variant: "warning",
+          });
+        } else {
+          set_physioTwo((prevval) => [...prevval, data]);
+          set_allDateSelected([]);
+          set_startAvailableHours("");
+          set_endAvailableHours("");
+        }
+      } else {
+        enqueueSnackbar("Availability already provided", {
+          variant: "warning",
+        });
+      }
+    } else {
+      if (!isDuplicatethree) {
+        if (
+          data.start === "" ||
+          data.end === "" ||
+          allDateSelected.length === 0
+        ) {
+          enqueueSnackbar("Please enter the available hours", {
+            variant: "warning",
+          });
+        } else {
+          set_physioThree((prevval) => [...prevval, data]);
+          set_allDateSelected([]);
+          set_startAvailableHours("");
+          set_endAvailableHours("");
+        }
+      } else {
+        enqueueSnackbar("Availability already provided", {
+          variant: "warning",
+        });
+      }
+    }
+  };
+  const handleLogout = () => {
+    set_radio("");
+    if (allDateSelected.length > 0) {
+      set_availSubmitted(false);
+    } else {
+      set_loggedinPhysio("");
+      setview("login");
+      set_availSubmitted(true);
+    }
+  };
+
+  // *************************************************************//
+
+  const tileContent = ({ date, view }) => {
+    if (view === "month") {
+      const formattedDate = format(date, "EEEE, MMMM dd, yyyy"); // Format tileContent date
+
+      if (loggedinPhysio.id === 5890) {
+        if (unselected === formattedDate) {
+          return <div className={styles.unselected}></div>;
+        } else if (allDateSelected.includes(formattedDate)) {
+          return <div className={styles.availableSlotTile_Two}></div>;
+        } else if (
+          physioOne &&
+          physioOne.some((slot) => slot.date.includes(formattedDate))
+        ) {
+          return <div className={styles.availableSlotTile}></div>;
+        }
+      } else if (loggedinPhysio.id === 5891) {
+        if (unselected === formattedDate) {
+          return <div className={styles.unselected}></div>;
+        } else if (allDateSelected.includes(formattedDate)) {
+          return <div className={styles.availableSlotTile_Two}></div>;
+        } else if (
+          physioTwo &&
+          physioTwo.some((slot) => slot.date.includes(formattedDate))
+        ) {
+          return <div className={styles.availableSlotTile}></div>;
+        }
+      } else if (loggedinPhysio.id === 5892) {
+        if (unselected === formattedDate) {
+          return <div className={styles.unselected}></div>;
+        } else if (allDateSelected.includes(formattedDate)) {
+          return <div className={styles.availableSlotTile_Two}></div>;
+        } else if (
+          physioThree &&
+          physioThree.some((slot) => slot.date.includes(formattedDate))
+        ) {
+          return <div className={styles.availableSlotTile}></div>;
+        }
+      }
+    }
+    return null;
+  };
+  // generating unique ID
+  const generateUniqueNumericId = () => {
+    let uniqueId;
+    do {
+      uniqueId = Math.floor(Math.random() * 50) + 1;
+    } while (generatedIds.has(uniqueId));
+    setGeneratedIds(new Set(generatedIds.add(uniqueId)));
+    return uniqueId;
+  };
+
+  function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false;
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] !== arr2[i]) return false;
+    }
+    return true;
+  }
+
+  const minSelectableDate = subDays(new Date(), -1);
+
   return (
     <div className={`${styles.wrapper}`}>
       {!availSubmitted && <div className={styles.opac}></div>}
       <div className={`${styles.innerwrapper}`}>
-        {(!availSubmitted || !availSubmittedTwo || !availSubmittedThree) && (
+        {!availSubmitted && (
           <div className={styles.yes_noDiv}>
             <h3>
               Availability not submitted, are you sure you want to logout?
@@ -295,37 +294,91 @@ export const Physio = ({
           <div>
             <Calendar
               onChange={handleDateChange}
-              value={selectedDate}
               minDate={minSelectableDate}
               tileContent={tileContent}
-              className={styles.calendar}
+              className={`${styles.calendar}`}
             />
           </div>
           <div className={styles.date_time}>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <TextField
-                disabled
-                id="outlined-disabled"
-                label={dayjsDate.format("dddd, MMMM D, YYYY")}
-              />
-              <DemoContainer components={["TimePicker", "TimePicker"]}>
-                <TimePicker
-                  value={time}
-                  onChange={handletimechange}
-                  minutesStep={15}
-                  sx={{ width: "100%" }}
-                />
-              </DemoContainer>
-            </LocalizationProvider>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-end",
-                marginTop: "6rem",
-              }}
-            >
-              <CustomButton text={"Add"} handleCLick={handleAdd} form={true} />
-            </div>
+            <h5>Available hours</h5>
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-helper-label">From</InputLabel>
+              <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={startAvailableHours}
+                disabled={!allDateSelected.length > 0}
+                label="From"
+                onChange={handleStartAvailable}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={0}>12:00 am</MenuItem>
+                <MenuItem value={1}>01:00 am</MenuItem>
+                <MenuItem value={2}>02:00 am</MenuItem>
+                <MenuItem value={3}>03:00 am</MenuItem>
+                <MenuItem value={4}>04:00 am</MenuItem>
+                <MenuItem value={5}>05:00 am</MenuItem>
+                <MenuItem value={6}>06:00 am</MenuItem>
+                <MenuItem value={7}>07:00 am</MenuItem>
+                <MenuItem value={8}>08:00 am</MenuItem>
+                <MenuItem value={9}>09:00 am</MenuItem>
+                <MenuItem value={10}>10:00 am</MenuItem>
+                <MenuItem value={11}>11:00 am</MenuItem>
+                <MenuItem value={12}>12:00 pm</MenuItem>
+                <MenuItem value={13}>01:00 pm</MenuItem>
+                <MenuItem value={14}>02:00 pm</MenuItem>
+                <MenuItem value={15}>03:00 pm</MenuItem>
+                <MenuItem value={16}>04:00 pm</MenuItem>
+                <MenuItem value={17}>05:00 pm</MenuItem>
+                <MenuItem value={18}>06:00 pm</MenuItem>
+                <MenuItem value={19}>07:00 pm</MenuItem>
+                <MenuItem value={20}>08:00 pm</MenuItem>
+                <MenuItem value={21}>09:00 pm</MenuItem>
+                <MenuItem value={22}>10:00 pm</MenuItem>
+                <MenuItem value={23}>11:00 pm</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-helper-label">To</InputLabel>
+              <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={endAvailableHours}
+                label="To"
+                onChange={handleEndAvailable}
+                disabled={!allDateSelected.length > 0}
+              >
+                <MenuItem value="">
+                  <em>None</em>
+                </MenuItem>
+                <MenuItem value={0}>12:00 am</MenuItem>
+                <MenuItem value={1}>01:00 am</MenuItem>
+                <MenuItem value={2}>02:00 am</MenuItem>
+                <MenuItem value={3}>03:00 am</MenuItem>
+                <MenuItem value={4}>04:00 am</MenuItem>
+                <MenuItem value={5}>05:00 am</MenuItem>
+                <MenuItem value={6}>06:00 am</MenuItem>
+                <MenuItem value={7}>07:00 am</MenuItem>
+                <MenuItem value={8}>08:00 am</MenuItem>
+                <MenuItem value={9}>09:00 am</MenuItem>
+                <MenuItem value={10}>10:00 am</MenuItem>
+                <MenuItem value={11}>11:00 am</MenuItem>
+                <MenuItem value={12}>12:00 pm</MenuItem>
+                <MenuItem value={13}>01:00 pm</MenuItem>
+                <MenuItem value={14}>02:00 pm</MenuItem>
+                <MenuItem value={15}>03:00 pm</MenuItem>
+                <MenuItem value={16}>04:00 pm</MenuItem>
+                <MenuItem value={17}>05:00 pm</MenuItem>
+                <MenuItem value={18}>06:00 pm</MenuItem>
+                <MenuItem value={19}>07:00 pm</MenuItem>
+                <MenuItem value={20}>08:00 pm</MenuItem>
+                <MenuItem value={21}>09:00 pm</MenuItem>
+                <MenuItem value={22}>10:00 pm</MenuItem>
+                <MenuItem value={23}>11:00 pm</MenuItem>
+              </Select>
+            </FormControl>
           </div>
         </div>
 

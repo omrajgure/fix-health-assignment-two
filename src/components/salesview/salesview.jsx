@@ -17,14 +17,14 @@ export function Salesview({
 }) {
   const [clickedId, set_clickedId] = useState("");
   const [clickedPhysio, set_clickedPhysio] = useState("");
-  const [flattenedData, set_flattenedData] = useState(
-    allPhysiodata
-      .flat()
-      .map((physio) => ({ ...physio, remarks: "Not appointed" }))
-  );
+  const [flattenedData, set_flattenedData] = useState(allPhysiodata);
+
+  const [filteredData, setFilteredData] = useState([]);
+  const [filter, setFilter] = useState("");
 
   const [allocatePhysio, set_allocatePhysio] = useState("");
   const [declined, set_declined] = useState(false);
+
   useEffect(() => {
     set_flattenedData((prevData) =>
       prevData.map((physio) => ({
@@ -32,7 +32,14 @@ export function Salesview({
         remarks: remarks[physio.id] || "Not appointed",
       }))
     );
-  }, []);
+    setFilteredData((prevdata) =>
+      prevdata.map((physio) => ({
+        ...physio,
+        remarks: remarks[physio.id] || "Not appointed",
+      }))
+    );
+    console.log("flattenedData : ", flattenedData);
+  }, [remarks]);
 
   const handleRowClick = (eachobj, index) => {
     set_clickedId(eachobj.id);
@@ -41,7 +48,7 @@ export function Salesview({
       return;
     }
 
-    const newClickedRows = Array(30).fill(false);
+    const newClickedRows = Array(50).fill(false);
     if (newClickedRows[clickedId] === false) {
       newClickedRows[clickedId] = true;
     }
@@ -53,6 +60,7 @@ export function Salesview({
     if (e.target.value === "no") {
       const newRemarks = [...remarks];
       newRemarks[clickedId] = "";
+
       setRemarks(newRemarks);
       set_declined(false);
     }
@@ -63,16 +71,16 @@ export function Salesview({
     const newRemarks = [...remarks];
     newRemarks[index] = value;
     setRemarks(newRemarks);
-  };
-  const handleclick = () => {
-    set_flattenedData((prevData) =>
+    setFilteredData((prevData) =>
       prevData.map((physio) => {
-        if (physio.id === clickedId) {
-          return { ...physio, remarks: remarks[clickedId] };
+        if (physio.id === index) {
+          return { ...physio, remarks: value };
         }
         return physio;
       })
     );
+  };
+  const handleclick = () => {
     const allocatedIds = [];
 
     // Loop through the remarks array
@@ -91,8 +99,10 @@ export function Salesview({
     setview("login");
   };
   const handlefilter = (e) => {
+    setFilter(e.target.value);
+
     if (e.target.value === "morning") {
-      const morningData = allPhysiodata
+      const morningData = flattenedData
         .flat()
         .map((physio) => ({
           ...physio,
@@ -100,13 +110,12 @@ export function Salesview({
             remarks[physio.id] === "" ? "Not appointed" : remarks[physio.id],
         }))
         .filter((physio) => {
-          const timehour = parseInt(physio.time.split(":")[0]); // Extract hour part from the time string
-          return timehour < 12; // Filter objects with time before 12:00 PM
+          const timestart = physio.start;
+          return timestart < 12;
         });
-
-      set_flattenedData(morningData); // Update state with filtered data for morning
+      setFilteredData(morningData);
     } else if (e.target.value === "afternoon") {
-      const afternoondata = allPhysiodata
+      const afternoondata = flattenedData
         .flat()
         .map((physio) => ({
           ...physio,
@@ -114,13 +123,16 @@ export function Salesview({
             remarks[physio.id] === "" ? "Not appointed" : remarks[physio.id],
         }))
         .filter((physio) => {
-          const timehour = parseInt(physio.time.split(":")[0]); // Extract hour part from the time string
-          return timehour >= 12 && timehour < 19;
+          const timestart = physio.start;
+          const timeend = physio.end;
+          return (
+            (timestart >= 12 && timestart < 19) ||
+            (timeend >= 12 && timeend < 19)
+          );
         });
-
-      set_flattenedData(afternoondata);
+      setFilteredData(afternoondata);
     } else if (e.target.value === "night") {
-      const nightdata = allPhysiodata
+      const nightdata = flattenedData
         .flat()
         .map((physio) => ({
           ...physio,
@@ -128,26 +140,23 @@ export function Salesview({
             remarks[physio.id] === "" ? "Not appointed" : remarks[physio.id],
         }))
         .filter((physio) => {
-          const timehour = parseInt(physio.time.split(":")[0]); // Extract hour part from the time string
-          return timehour > 19;
+          const timestart = physio.start;
+          const timeend = physio.end;
+          return timestart > 19 || timeend > 19;
         });
-      set_flattenedData(nightdata);
+      setFilteredData(nightdata);
     } else {
-      set_flattenedData(
-        allPhysiodata.flat().map((physio) => ({
-          ...physio,
-          remarks:
-            remarks[physio.id] === "" ? "Not appointed" : remarks[physio.id],
-        }))
-      );
+      setFilteredData([]);
     }
   };
+
+  /************************************* */
   let tablecontent = (
     <div>
       <h2 style={{ textAlign: "center", marginTop: 0 }}>
         Physio's Availability
       </h2>
-      <table>
+      <table className={styles.tableDiv}>
         <thead>
           <tr>
             <th>Name</th>
@@ -157,28 +166,91 @@ export function Salesview({
           </tr>
         </thead>
         <tbody>
-          {flattenedData.map((eachobj, ind) => {
-            return (
-              <tr
-                onClick={() => {
-                  handleRowClick(eachobj, ind);
-                }}
-                className={
-                  eachobj.remarks !== "Not appointed" ? styles.appointed : ""
-                }
-              >
-                <td>{eachobj.name}</td>
-                <td>{eachobj.date}</td>
-                <td>{eachobj.time}</td>
-                <td>{eachobj.remarks}</td>
-              </tr>
-            );
-          })}
+          {!filter && !filteredData.length > 0
+            ? flattenedData.map((eachobj, ind) => {
+                return (
+                  <tr
+                    onClick={() => {
+                      handleRowClick(eachobj, ind);
+                    }}
+                    className={
+                      eachobj.remarks !== "Not appointed"
+                        ? styles.appointed
+                        : ""
+                    }
+                  >
+                    <td>{eachobj.name}</td>
+                    <td>
+                      {Array.isArray(eachobj.date)
+                        ? eachobj.date.join(" | ")
+                        : eachobj.date}
+                    </td>
+                    <td>
+                      {eachobj.start === 0 ? "00" : eachobj.start}-
+                      {eachobj.end === 0 ? "00" : eachobj.end}
+                    </td>
+                    <td>{eachobj.remarks}</td>
+                  </tr>
+                );
+              })
+            : filter === "none" || filter === "Filters"
+            ? flattenedData.map((eachobj, ind) => {
+                return (
+                  <tr
+                    onClick={() => {
+                      handleRowClick(eachobj, ind);
+                    }}
+                    className={
+                      eachobj.remarks !== "Not appointed"
+                        ? styles.appointed
+                        : ""
+                    }
+                  >
+                    <td>{eachobj.name}</td>
+                    <td>
+                      {Array.isArray(eachobj.date)
+                        ? eachobj.date.join(" | ")
+                        : eachobj.date}
+                    </td>
+                    <td>
+                      {eachobj.start === 0 ? "00" : eachobj.start}-
+                      {eachobj.end === 0 ? "00" : eachobj.end}
+                    </td>
+                    <td>{eachobj.remarks}</td>
+                  </tr>
+                );
+              })
+            : filteredData.map((eachobj, ind) => {
+                return (
+                  <tr
+                    onClick={() => {
+                      handleRowClick(eachobj, ind);
+                    }}
+                    className={
+                      eachobj.remarks !== "Not appointed"
+                        ? styles.appointed
+                        : ""
+                    }
+                  >
+                    <td>{eachobj.name}</td>
+                    <td>
+                      {Array.isArray(eachobj.date)
+                        ? eachobj.date.join(" | ")
+                        : eachobj.date}
+                    </td>
+                    <td>
+                      {eachobj.start === 0 ? "00" : eachobj.start}-
+                      {eachobj.end === 0 ? "00" : eachobj.end}
+                    </td>
+                    <td>{eachobj.remarks}</td>
+                  </tr>
+                );
+              })}
         </tbody>
       </table>
       {declined ? (
-        <div className={styles.bookingDiv}>
-          <div className={styles.innerdiv}>
+        <div className={`${styles.bookingDiv} `}>
+          <div className={`${styles.innerdiv} ${styles.yes_noDiv}`}>
             <div>Do you want to allocate Doctor {clickedPhysio}?</div>
             <div>
               <RadioGroup
@@ -219,6 +291,7 @@ export function Salesview({
   );
   return (
     <div className={styles.wrapper}>
+      {declined && <div className={styles.opac}></div>}
       <div
         style={{
           display: "flex",

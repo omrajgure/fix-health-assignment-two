@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { Hero } from "./components/hero/hero";
 import { SnackbarProvider } from "notistack";
@@ -34,10 +34,51 @@ function App() {
   const [physioThree, set_physioThree] = useState([]);
 
   const allPhysiodata = [physioOne, physioTwo, physioThree];
-  const flattenedData = allPhysiodata.flat();
-  const [remarks, setRemarks] = useState(Array(30).fill(""));
+
+  const [remarks, setRemarks] = useState(Array(50).fill(""));
   const [allocatedPhysioId, set_allocatedPhysioId] = useState([]);
 
+  const newDataArray = allPhysiodata
+    .flat()
+    .flatMap((physio) => {
+      // Check if the physio object has a date array with multiple values
+      if (Array.isArray(physio.date) && physio.date.length > 1) {
+        // Create a new object for each date in the date array
+        return physio.date.map((dateValue) => ({
+          ...physio, // Spread all properties of the original physio object
+          date: [dateValue], // Create a new date array with only one value
+        }));
+      } else {
+        // If the date array has only one value or is not an array, return the original object
+        return { ...physio };
+      }
+    })
+    .filter((physio, index, self) => {
+      // Check if the current index is the first occurrence of the object
+      const isFirstOccurrence =
+        self.findIndex(
+          (p) =>
+            p.start === physio.start &&
+            p.end === physio.end &&
+            p.name === physio.name &&
+            p.date[0] === physio.date[0]
+        ) === index;
+      return isFirstOccurrence;
+    });
+
+  let currentId = 1; // Initialize the current ID counter
+
+  const newDataArrayWithId = newDataArray
+    .map((physio) => {
+      // Add a new property 'id' to each physio object with a unique ID
+      const physioWithId = { ...physio, id: currentId };
+      currentId++; // Increment the current ID counter for the next object
+      return physioWithId;
+    })
+    .map((physio) => ({
+      ...physio,
+      remarks: remarks[physio.id] || "Not appointed",
+    }));
   return (
     <div>
       <SnackbarProvider
@@ -59,7 +100,7 @@ function App() {
         ) : view === "patient" ? (
           <Patientview
             setview={setview}
-            physioavailability={flattenedData}
+            physioavailability={newDataArrayWithId}
             allocatedPhysioId={allocatedPhysioId}
           />
         ) : view === "physio" ? (
@@ -76,7 +117,7 @@ function App() {
           />
         ) : (
           <Salesview
-            allPhysiodata={allPhysiodata}
+            allPhysiodata={newDataArrayWithId}
             setview={setview}
             remarks={remarks}
             setRemarks={setRemarks}

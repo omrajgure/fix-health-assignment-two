@@ -21,7 +21,8 @@
 .innerwrapper {
   position: relative;
   padding: 2rem 4rem;
-  height: 30rem;
+  min-height: 30rem;
+  height: auto;
   width: 45rem;
   background-color: aliceblue;
 
@@ -60,13 +61,20 @@
   height: 100%;
   width: 100%;
 }
+.unselected {
+  background-color: inherit;
+  height: 100%;
+  width: 100%;
+}
+
 .calendar {
-  border: 1px solid #ccc; /* Add border */
-  border-radius: 12px; /* Add border radius */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add box shadow */
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 1rem;
   flex: 1;
 }
+
 .date_time {
   flex: 1;
   display: flex;
@@ -97,6 +105,7 @@
     bottom: 15rem;
   }
 }
+
 @media screen and (max-width: 480px) {
   .innerwrapper {
     width: 20rem;

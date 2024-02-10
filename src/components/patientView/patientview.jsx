@@ -4,7 +4,11 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { useState, useEffect } from "react";
 import { CustomButton } from "../button/button";
-import { format, isSameDay, subDays } from "date-fns";
+import { format, subDays } from "date-fns";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
 export const Patientview = ({
   setview,
   physioavailability,
@@ -13,40 +17,58 @@ export const Patientview = ({
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedSlot, setSelectedSlot] = useState([]);
   const [filtereddata, set_filtereddata] = useState("");
-  const [filterClicked, set_filterClicked] = useState("");
+  const [slots, set_slots] = useState("");
 
   useEffect(() => {
     const data = physioavailability.filter((physio) => {
       return !allocatedPhysioId.includes(physio.id);
     });
+
     set_filtereddata(data);
   }, [allocatedPhysioId, physioavailability]);
 
-  useEffect(() => {
-    if (filterClicked) {
-      const today = new Date();
-      today.setDate(today.getDate() + 1);
-      handleDateChange(today);
-    }
-  }, [filterClicked]);
+  const handleslots = (e) => {
+    set_slots(e.target.value);
+  };
   const handleDateChange = (date) => {
     setSelectedDate(date);
     const formattedDate = format(date, "EEEE, MMMM dd, yyyy");
-    const slotsForDate = filtereddata
-      .filter(
-        (slot) =>
-          format(new Date(slot.date), "EEEE, MMMM dd, yyyy") === formattedDate
-      )
-      .map((slot) => slot.time);
 
-    setSelectedSlot(slotsForDate);
+    const slotsForDate = filtereddata
+      .filter((slot) => slot.date.includes(formattedDate))
+      .map((slot) => [slot.start, slot.end]);
+    let minStart = 24;
+    let maxEnd = 0;
+    slotsForDate.map((slot) => {
+      if (minStart > slot[0]) {
+        minStart = slot[0];
+      }
+      if (maxEnd < slot[1]) {
+        maxEnd = slot[1];
+      }
+    });
+    let timeSlots = [];
+    for (let i = minStart; i < maxEnd; i++) {
+      for (let j = 0; j < 60; j += 15) {
+        let eachSlot;
+        if (j === 0) {
+          eachSlot = i.toString() + ":" + j.toString() + "0";
+        } else {
+          eachSlot = i.toString() + ":" + j.toString();
+        }
+
+        timeSlots.push(eachSlot);
+      }
+    }
+
+    setSelectedSlot(timeSlots);
   };
 
   const tileContent = ({ date, view }) => {
     if (view === "month") {
       const formattedDate = format(date, "EEEE, MMMM dd, yyyy"); // Format tileContent date
       if (filtereddata) {
-        if (filtereddata.some((slot) => isSameDay(slot.date, formattedDate))) {
+        if (filtereddata.some((slot) => slot.date.includes(formattedDate))) {
           return <div className={styles.availableSlotTile}></div>;
         }
       }
@@ -65,29 +87,32 @@ export const Patientview = ({
 
     if (e.target.value === "morning") {
       const morningdata = data.filter((physio) => {
-        const timehour = parseInt(physio.time.split(":")[0]);
-        return timehour < 12;
+        const timestart = physio.start;
+        return timestart < 12;
       });
 
       set_filtereddata(morningdata);
     } else if (e.target.value === "afternoon") {
       const afternoondata = data.filter((physio) => {
-        const timehour = parseInt(physio.time.split(":")[0]);
-        return timehour >= 12 && timehour < 19;
+        const timestart = physio.start;
+        const timeend = physio.end;
+        return (
+          (timestart >= 12 && timestart < 19) || (timeend >= 12 && timeend < 19)
+        );
       });
-      // console.log(afternoondata);
+
       set_filtereddata(afternoondata);
     } else if (e.target.value === "night") {
       const nightdata = data.filter((physio) => {
-        const timehour = parseInt(physio.time.split(":")[0]);
-        return timehour > 19;
+        const timestart = physio.start;
+        const timeend = physio.end;
+        return timestart > 19 || timeend > 19;
       });
 
       set_filtereddata(nightdata);
     } else {
       set_filtereddata(data);
     }
-    set_filterClicked(e.target.value);
   };
 
   const minSelectableDate = subDays(new Date(), -1);
@@ -150,12 +175,26 @@ export const Patientview = ({
             />
             <div className={styles.timeDiv}>
               {selectedSlot.length > 0 ? (
-                <div>
-                  <h2>Available time slots </h2>
-                  {selectedSlot.map((slot) => {
-                    return <li style={{ fontWeight: "bold" }}>{slot}</li>;
-                  })}
-                </div>
+                <FormControl sx={{ m: 1, minWidth: 220 }}>
+                  <InputLabel id="demo-simple-select-helper-label">
+                    Available Timeslots
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-helper-label"
+                    id="demo-simple-select-helper"
+                    label="Available Timeslots"
+                    value={slots}
+                    onChange={handleslots}
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+
+                    {selectedSlot.map((slot, idx) => {
+                      return <MenuItem value={idx}>{slot}</MenuItem>;
+                    })}
+                  </Select>
+                </FormControl>
               ) : (
                 <h2>No Slots available</h2>
               )}

@@ -13,7 +13,9 @@ body {
     rgba(33, 33, 61, 1) 100%
   ); */
 }
-
+.highlight {
+  background-color: #0b1937;
+}
 input {
   background-color: inherit;
   color: inherit;
